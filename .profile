@@ -1,0 +1,1 @@
+export chown www-data:www-data /var/www/rss-bridge/cache
