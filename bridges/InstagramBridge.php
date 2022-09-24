@@ -142,7 +142,7 @@ class InstagramBridge extends BridgeAbstract
             if ($key == null) {
                 returnServerError('Unable to find username in search result.');
             }
-            $data = $this-> saveCachedValue('userid_' . $username);
+            $data = $this-> BridgeAbstract::saveCachedValue('userid_' . $username);
         }
         return $key;
     }
