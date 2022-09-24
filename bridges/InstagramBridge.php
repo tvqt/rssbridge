@@ -93,22 +93,13 @@ class InstagramBridge extends BridgeAbstract
         if ($sessionId and $dsUserId) {
             $headers[] = 'cookie: sessionid=' . $sessionId . '; ds_user_id=' . $dsUserId;
         }
-        try {
-            $response = getContents($uri, $headers, [CURLOPT_FOLLOWLOCATION => false], true);
-        } catch (\HttpException $e) {
-            if ($e->getCode() == 401 && $this->getInput('u')) {
-                throw new DonorRequestException($e);
-            } else {
-                throw $e;
-            }
-        }
-
+        $response = getContents($uri, $headers, [CURLOPT_FOLLOWLOCATION => false], true);
         if (in_array($response['code'], [200, 304])) {
             return $response['content'];
         }
 
         if ($response['code'] == 302) {
-            $redirect_uri = urljoin(self::URI, $response['header']['location'][0]);
+            $redirect_uri = urljoin(self:URI, $e->headers['location'][0]);
             if (str_starts_with($redirect_uri, 'https://www.instagram.com/accounts/login')) {
                 $e = new \Exception("Instagram asks to login", 500);
                 if ($this->getInput('u')) {
@@ -116,8 +107,6 @@ class InstagramBridge extends BridgeAbstract
                 } else {
                     throw $e;
                 }
-            } else {
-                throw new \Exception("Unexpected redirect location");
             }
         }
 
@@ -142,7 +131,7 @@ class InstagramBridge extends BridgeAbstract
             if ($key == null) {
                 returnServerError('Unable to find username in search result.');
             }
-            $data = $this-> BridgeAbstract::saveCachedValue('userid_' . $username);
+            $this->saveCachedValue('userid_' . $username);
         }
         return $key;
     }
